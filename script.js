@@ -144,6 +144,7 @@ function buildToolbar() {
     <button id="bulk-delete-btn" class="btn-bulk-delete" style="display:none">Fshi te zgjedhurat</button>
     <button id="export-btn" class="btn-export">⬇ Eksporto</button>
     <button id="select-all-btn" class="btn-select-all">Zgjidh te gjithe</button>
+    <button id="dark-mode-btn" class="btn-dark-mode" title="Dark Mode">Dark</button>
   `;
   const section = document.querySelector(".users-section");
   section.parentNode.insertBefore(toolbar, section);
@@ -162,6 +163,8 @@ function buildToolbar() {
 
   $("export-btn").addEventListener("click", openExportModal);
   $("bulk-delete-btn").addEventListener("click", bulkDelete);
+
+  $("dark-mode-btn").addEventListener("click", toggleDarkMode);
 
   $("select-all-btn").addEventListener("click", () => {
     const pageIds = getPaginatedUsers().map((u) => u.id);
@@ -498,6 +501,13 @@ function injectExtraInputs() {
 
 
 
+function onDragStart(e) {
+  dragSrcIndex = parseInt(e.currentTarget.dataset.index);
+  e.currentTarget.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", dragSrcIndex);
+}
+
 function onDragOver(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = "move";
@@ -520,6 +530,18 @@ function onDragEnd(e) {
   userList.querySelectorAll(".drag-over").forEach((li) => li.classList.remove("drag-over"));
 }
 
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("dashboard-dark-mode", isDark ? "on" : "off");
+  showToast(isDark ? "Dark mode aktivizuar" : "Light mode aktivizuar", "info");
+}
+
+function loadDarkModePreference() {
+  const pref = localStorage.getItem("dashboard-dark-mode");
+  if (pref === "on") document.body.classList.add("dark-mode");
+}
+
 function setupKeyboardShortcuts() {
   document.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "z") { e.preventDefault(); undoLast(); }
@@ -531,6 +553,7 @@ function setupKeyboardShortcuts() {
 }
 
 function init() {
+  loadDarkModePreference();
   loadUsers();
   injectExtraInputs();
   setupKeyboardShortcuts();
