@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+ 
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">User Dashboard</span>
+      </div>
+      <div class="header-meta">
+        <span class="badge" id="user-count">0 users</span>
+      </div>
+    </div>
+  </header>
+ 
+  <!-- MAIN -->
+  <main class="main">
+ 
+    <!-- ADD USER SECTION -->
+    <section class="add-section">
+      <div class="add-card">
+        <h2 class="add-title">Shto përdorues të ri</h2>
+        <div class="add-form">
+          <input
+            type="text"
+            id="user-input"
+            class="input"
+            placeholder="Shkruaj emrin..."
+            maxlength="30"
+          />
+          <button id="add-btn" class="btn-add">
+            <span class="btn-icon">+</span>
+            <span>Add User</span>
+          </button>
+        </div>
+        <p class="input-hint" id="input-hint"></p>
+      </div>
+    </section>
+ 
+    <section class="users-section">
+      <div class="section-header">
+        <h2 class="section-title">Lista e përdoruesve</h2>
+        <span class="section-line"></span>
+      </div>
+ 
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">◎</div>
+        <p class="empty-text">Nuk ka përdorues ende.</p>
+        <p class="empty-sub">Shto të parin nga forma lart.</p>
+      </div>
+ 
+      <ul class="user-list" id="user-list"></ul>
+    </section>
+ 
+  </main>
+ 
+  <footer class="footer">
+    <p>User Dashboard &mdash; Projekt shkollor &copy; 2025</p>
+  </footer>
+ 
+  <script src="script.js"></script>
+</body>
+</html>
