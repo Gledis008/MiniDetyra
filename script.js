@@ -17,6 +17,7 @@ let undoTimer = null;
 let dragSrcIndex = null;
 let editingId = null;
 let toastTimer = null;
+const userList = $("user-list");
 
 function loadUsers() {
   try {
