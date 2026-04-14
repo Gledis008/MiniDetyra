@@ -496,11 +496,7 @@ function injectExtraInputs() {
   form.insertBefore(emailInput, roleSelect);
 }
 
-function onDragStart(e) {
-  dragSrcIndex = parseInt(e.currentTarget.dataset.index);
-  e.currentTarget.classList.add("dragging");
-  e.dataTransfer.effectAllowed = "move";
-}
+
 
 function onDragOver(e) {
   e.preventDefault();
