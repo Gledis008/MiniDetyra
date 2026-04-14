@@ -88,6 +88,7 @@ function applyFiltersAndSort() {
     az: (a, b) => a.name.localeCompare(b.name),
     za: (a, b) => b.name.localeCompare(a.name),
     active: (a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0),
+    role: (a, b) => (a.role || "Guest").localeCompare(b.role || "Guest"),
   };
   filteredUsers.sort(sorts[sortMode] ?? sorts.newest);
 }
@@ -140,6 +141,7 @@ function buildToolbar() {
       <option value="az">A → Z</option>
       <option value="za">Z → A</option>
       <option value="active">Aktivet</option>
+      <option value="role">Sipas Rolit</option>
     </select>
     <button id="bulk-delete-btn" class="btn-bulk-delete" style="display:none">Fshi te zgjedhurat</button>
     <button id="export-btn" class="btn-export">⬇ Eksporto</button>
@@ -184,11 +186,14 @@ function buildPagination() {
   }
   const total = getTotalPages();
   if (total <= 1) { pag.innerHTML = ""; return; }
-  let html = `<button class="pag-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}>‹</button>`;
+  let html = `<button class="pag-btn" data-page="1" ${currentPage === 1 ? "disabled" : ""}>«</button>`;
+  html += `<button class="pag-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}>‹</button>`;
   for (let i = 1; i <= total; i++) {
     html += `<button class="pag-btn ${i === currentPage ? "pag-btn--active" : ""}" data-page="${i}">${i}</button>`;
   }
   html += `<button class="pag-btn" data-page="${currentPage + 1}" ${currentPage === total ? "disabled" : ""}>›</button>`;
+  html += `<button class="pag-btn" data-page="${total}" ${currentPage === total ? "disabled" : ""}>»</button>`;
+  html += `<span class="pag-info">Faqja ${currentPage} nga ${total}</span>`;
   pag.innerHTML = html;
   pag.querySelectorAll(".pag-btn:not([disabled])").forEach((btn) => {
     btn.addEventListener("click", () => { currentPage = parseInt(btn.dataset.page); render(); });
@@ -325,11 +330,13 @@ function addUser() {
   const emailEl = $("email-input");
 
   if (!name) { showHint("Ju lutem shkruani nje emer.", "error"); $("user-input").focus(); return; }
-  if (name.length < 2) { showHint("⚠ Emri duhet te kete te pakten 2 karaktere.", "error"); return; }
-  if (users.some((u) => u.name.toLowerCase() === name.toLowerCase())) { showHint("⚠ Ky perdorues ekziston tashme.", "error"); return; }
+  if (name.length < 2) { showHint("Emri duhet te kete te pakten 2 karaktere.", "error"); return; }
+  if (name.length > 30) { showHint("Emri nuk mund te jete me i gjate se 30 karaktere.", "error"); return; }
+  if (!/^[a-zA-ZëËçÇ\s]+$/.test(name)) { showHint("Emri mund te permbaje vetem shkronja dhe hapesira.", "error"); return; }
+  if (users.some((u) => u.name.toLowerCase() === name.toLowerCase())) { showHint("Ky perdorues ekziston tashme.", "error"); return; }
 
   const email = emailEl ? emailEl.value.trim() : "";
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showHint("⚠ Email-i nuk eshte i vlefshem.", "error"); return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showHint("Email-i nuk eshte i vlefshem.", "error"); return; }
 
   users.unshift({
     id: generateId(),
